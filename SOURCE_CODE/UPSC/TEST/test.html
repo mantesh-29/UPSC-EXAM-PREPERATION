@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UPSC - TEST ID: 10001</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <style>
+    body {
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 250px;
+      background: #f4f4f4;
+      padding: 20px;
+      border-right: 1px solid #ccc;
+      overflow-y: auto;
+    }
+    .sidebar h4 {
+      margin-bottom: 10px;
+    }
+    .question-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+    .question-nav button {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 5px;
+      background: #ddd;
+      cursor: pointer;
+    }
+    .question-nav button.marked {
+      background: #f39c12;
+      color: white;
+    }
+    .question-nav button.answered {
+      background: #27ae60;
+      color: white;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 20px;
+    }
+
+    .option-label {
+      display: block;
+      margin-bottom: 8px;
+      cursor: pointer;
+    }
+    .option-label input {
+      margin-right: 8px;
+    }
+    .correct {
+      color: green;
+      font-weight: bold;
+    }
+    .wrong {
+      color: red;
+      font-weight: bold;
+    }
+    .mark-btn {
+      margin-top: 10px;
+      padding: 8px 15px;
+      border: none;
+      background: #f39c12;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h4>Questions</h4>
+    <div class="question-nav" id="questionNav"></div>
+  </div>
+
+  <div class="main-content">
+    <header class="d-flex justify-content-around bg-body-tertiary p-2 mb-3">
+      <nav>
+        <h2 class="brand">Acheiver</h2>
+        <h1>UPSC Exam</h1>
+      </nav>
+    </header>
+
+    <main>
+      <section id="questionBox" class="mt-3"></section>
+
+      <button class="mark-btn" id="markBtn">Mark for Review</button>
+
+      <section class="mt-3">
+        <button id="prevBtn" class="btn btn-secondary">Previous</button>
+        <button id="nextBtn" class="btn btn-primary">Next</button>
+        <button id="submitBtn" class="btn btn-success">Submit</button>
+      </section>
+
+      <section id="result" class="mt-3"></section>
+    </main>
+  </div>
+
+  <script>
+
+    const testQuestions = [
+  {
+    question: "A clock takes 9 seconds to strike 4 times. In order to strike 12 times at the same rate, the time taken is?",
+    options: ["27 seconds", "29 seconds", "33 seconds", "36 seconds"],
+    answer: 2
+  },
+  {
+    question: "Number of times 29th day of the month occurs in 400 consecutive years is?",
+    options: ["4400", "4497", "4800", "4600"],
+    answer: 1
+  },
+  {
+    question: "3rd Monday falls on 20th March, 1995. What was the day of November, 1994?",
+    options: ["Sunday", "Tuesday", "Thursday", "Friday"],
+    answer: 2
+  },
+  {
+    question: "What was the day of the week on 28th February, 1995?",
+    options: ["Monday", "Tuesday", "Wednesday", "Thursday"],
+    answer: 1
+  },
+  {
+    question: "January 1, 1992 was Wednesday. What day of the week was January 1, 1993?",
+    options: ["Monday", "Tuesday", "Thursday", "Friday"],
+    answer: 3
+  },
+  {
+    question: "If the 3rd day of a month is Monday, which one of the following will be the fifth day from 21st of this month? [CSAT 2014]", 
+    options: ["Monday", "Tuesday", "Wednesday", "Friday"], 
+    answer: 2 
+  },
+  { 
+    question: "If second and fourth Saturdays and all the Sundays are taken as only holidays for an office, what would be the minimum number of possible working days of any month of any year? [CSAT 2017]", 
+    options: ["23", "22", "21", "20"], 
+    answer: 1 
+  },
+  { 
+    question: "Consider the sequence given below: 4/12/95, 1/1/96, 29/1/96, 26/2/96, what is the next term of the series? [CSAT 2018]", 
+    options: ["24/3/96", "25/3/96", "26/3/96", "27/3/96"], 
+    answer: 1 
+  },
+  { 
+    question: "Which year has the same calendar as that of 2009? [CSAT 2019]", 
+    options: ["2018", "2017", "2016", "2015"], 
+    answer: 3 
+  },
+  { 
+    question: "Mr 'X' has three children. The birthday of the first child falls on the 5th Monday of April, that of the second one falls on the 5th Thursday of November. On which day is the birthday of his third child, which falls on 20th December? [CSAT 2019]", 
+    options: ["Monday", "Thursday", "Saturday", "Sunday"], 
+    answer: 1 
+  },
+  { 
+    question: "If in a particular year 12th January is a Sunday, then which one of the following is correct? [CSAT 2020]", 
+    options: ["15th July is a Sunday if the year is a leap year.", "15th July is a Sunday if the year is not a leap year.", "12th July is a Sunday if the year is a leap year.", "12th July is not a Sunday if the year is a leap year."], 
+    answer: 2 
+  },
+  { 
+    question: "Which day is 10th October, 2027? [CSAT 2021]", 
+    options: ["Sunday", "Monday", "Tuesday", "Saturday"], 
+    answer: 0 
+  },
+  { 
+    question: "Consider two Statements and a Question: Statement-1: The last day of the month is a Wednesday. Statement-2: The third Saturday of the month was the seventeenth day. Question: What day is the fourteenth of the given month? [CSAT 2021]", 
+    options: ["Statement-1 alone is sufficient to answer the Question.", "Statement-2 alone is sufficient to answer the Question.", "Both Statement-1 and Statement-2 are required to answer the Question.", "Neither Statement-1 alone nor Statement-2 alone is sufficient to answer the Question."], 
+    answer: 1 
+  },
+  { 
+    question: "Joseph visits the club on every 5th day; Harsh visits on every 24th day, while Sumit visits on every 9th day. If all three of them met at the club on a Sunday, then on which day will all three of them meet again? [CSAT 2021]", 
+    options: ["Monday", "Wednesday", "Thursday", "Sunday"], 
+    answer: 1 
+  },
+  { 
+    question: "Which date of June 2099 among the following is Sunday? [CSAT 2022]", 
+    options: ["4", "5", "6", "7"], 
+    answer: 3 
+  },
+  { 
+    question: "If today is Sunday, then which day is it exactly on 1010th day? [CSAT 2023]", 
+    options: ["Wednesday", "Thursday", "Friday", "Saturday"], 
+    answer: 0 
+  },
+  { 
+    question: "The calendar for the year 2025 is same for: [CSAT 2024]", 
+    options: ["2029", "2030", "2031", "2033"], 
+    answer: 2 
+  },
+
+  {
+    question: "March of a year is the same day on what date of the same year?",
+    options: ["5th August", "5th October", "5th November", "5th December"],
+    answer: 2
+  },
+  {
+    question: "January 7, 1992 was Tuesday. Find the day of the week on the same date after 5 years, i.e., on January 7, 1997?",
+    options: ["Monday", "Tuesday", "Wednesday", "Friday", "Friday"],
+    answer: 1
+  },
+  {
+    question: "My watch gains 5 minutes in every hour. How many degrees does the second hand move in every minute?",
+    options: ["375°", "380°", "385°", "390°"],
+    answer: 3
+  },
+  {
+    question: "What was the day of the week of 1st January 2001?",
+    options: ["Tuesday", "Wednesday", "Friday", "Sunday"],
+    answer: 3
+  },
+  {
+    question: "May 6, 1993 was Thursday. What day of the week was on May 6, 1992?",
+    options: ["Tuesday", "Wednesday", "Friday", "Saturday"],
+    answer: 0
+  },
+  {
+    question: "Karan remembers that his sister's birthday is not after 18th August. Karan's mother remembers that it is before 20th August but after 17th August. On which date is Karan's sister's birthday?",
+    options: ["18th August", "17th August", "19th August", "20th August"],
+    answer: 0
+  },
+  {
+    question: "Advik's birthday is on Monday 19th June. On what day of the week will Nishith's birthday fall if he was born on 17th November of the same year?",
+    options: ["Saturday", "Wednesday", "Friday", "Sunday"],
+    answer: 2
+  },
+  {
+    question: "Bobby's birthday is on Monday 5th June. On what day of the week will Pinky's birthday fall if she was born on 22nd September of the same year?",
+    options: ["Saturday", "Wednesday", "Friday", "Sunday"],
+    answer: 2
+  },
+  {
+    question: "Hansh's birthday is on Monday 5th June. On what day of the week will Tushar's birthday fall if he was born on 11th December of the same year?",
+    options: ["Sunday", "Wednesday", "Monday", "Tuesday"],
+    answer: 2
+  },
+  {
+    question: "Akshar remembers that the match is after 26th April but before 30th April, while Suresh remembers it is after 22nd April but before 28th April. On which date is the match?",
+    options: ["29th April", "26th April", "27th April", "28th April"],
+    answer: 2
+  },
+  {
+    question: "Divit's birthday is on Friday 30th June. On what day of the week will Samar's birthday fall if he was born on 15th November of the same year?",
+    options: ["Tuesday", "Friday", "Wednesday", "Saturday"],
+    answer: 2
+  },
+  {
+    question: "Chirag's birthday is on Thursday 1st June. On what day of the week will Reyansh's birthday fall if he was born on 3rd December of the same year?",
+    options: ["Wednesday", "Sunday", "Friday", "Saturday"],
+    answer: 2
+  },
+  {
+    question: "Eshan's birthday is on Friday 10th March. On what day of the week will Shlok's birthday fall if he was born on 25th September of the same year?",
+    options: ["Monday", "Wednesday", "Friday", "Thursday"],
+    answer: 0
+  },
+  {
+    question: "Devansh's birthday is on Friday 14th April. On what day of the week will Rohan's birthday fall if he was born on 20th September of the same year?",
+    options: ["Tuesday", "Friday", "Thursday", "Wednesday"],
+    answer: 1
+  },
+  {
+    question: "Gurkiran's birthday is on Sunday 21st May. On what day of the week will Shreyas's birthday fall if he was born on 14th November of the same year?",
+    options: ["Tuesday", "Wednesday", "Friday", "Saturday"],
+    answer: 0
+  },
+  {
+    question: "Faiyaz's birthday is on Wednesday 12th April. On what day of the week will Shray's birthday fall if he was born on 2nd October of the same year?",
+    options: ["Monday", "Saturday", "Wednesday", "Sunday"],
+    answer: 0
+  },
+  {
+    question: "Sumitra remembers that her mother's birthday is after 13th February but before 16th February. Her brother remembers it is after 14th February but before 17th February. On which date is the birthday?",
+    options: ["13th February", "14th February", "15th February", "17th February"],
+    answer: 2
+  },
+  {
+    question: "Divyansh's birthday is on Sunday 16th July. On what day of the week will Shaan's birthday fall if he was born on 1st August of the same year?",
+    options: ["Tuesday", "Monday", "Wednesday", "Wednesday"],
+    answer: 0
+  },
+  {
+    question: "Dhruv's birthday is on Sunday 28th May. On what day of the week will Sahil's birthday fall if he was born on 19th October of the same year?",
+    options: ["Saturday", "Wednesday", "Thursday", "Sunday"],
+    answer: 2
+  },
+  {
+    question: "Bhavin's birthday is on Monday 29th May. On what day of the week will Rachit's birthday fall if he was born on 17th November of the same year?",
+    options: ["Saturday", "Wednesday", "Sunday", "Friday"],
+    answer: 2
+  },
+  {
+    question: "Meetu's birthday is on Wednesday 8th March. On what day of the week will Ritu's birthday fall if she was born on 10th July of the same year?",
+    options: ["Monday", "Wednesday", "Friday", "Saturday"],
+    answer: 0
+  },
+  {
+    question: "Akarsh's birthday is on Saturday 29th July. On what day of the week will Ojas's birthday fall if he was born on 12th August of the same year?",
+    options: ["Wednesday", "Friday", "Saturday", "Sunday"],
+    answer: 2
+  },
+  {
+    question: "Mishti's birthday is on Thursday 27th April. On what day of the week will Aradhya's birthday fall if she was born on 20th October of the same year?",
+    options: ["Friday", "Wednesday", "Saturday", "Thursday"],
+    answer: 0
+  },
+  {
+    question: "Aarush's birthday is on Thursday 27th April. On what day of the week will Mitul's birthday fall if he was born on 28th September of the same year?",
+    options: ["Monday", "Thursday", "Wednesday", "Tuesday"],
+    answer: 1
+  },
+  {
+    question: "Aarav's birthday is on Sunday 12th March. On what day of the week will Madhup's birthday fall if he was born on 10th August of the same year?",
+    options: ["Thursday", "Wednesday", "Friday", "Saturday"],
+    answer: 0
+  },
+  {
+    question: "Aayush's birthday is on Monday 22nd May. On what day of the week will Neerav's birthday fall if he was born on 30th October of the same year?",
+    options: ["Monday", "Wednesday", "Friday", "Thursday"],
+    answer: 0
+  },
+  {
+    question: "Nasir's birthday is on Thursday 18th May. On what day of the week will Rehan's birthday fall if he was born on 19th August of the same year?",
+    options: ["Wednesday", "Saturday", "Friday", "Thursday"],
+    answer: 1
+  },
+  {
+    question: "Priya's birthday is on Tuesday 11th April. On what day of the week will Rani's birthday fall if she was born on 31st August of the same year?",
+    options: ["Monday", "Wednesday", "Tuesday", "Thursday"],
+    answer: 3
+  },
+  {
+    question: "Aniruddh's birthday is on Sunday 2nd April. On what day of the week will Priyansh's birthday fall if he was born on 28th October of the same year?",
+    options: ["Saturday", "Wednesday", "Friday", "Thursday"],
+    answer: 0
+  },
+  {
+    question: "Arnav's birthday is on Tuesday 14th March. On what day of the week will Pranay's birthday fall if he was born on 13th September of the same year?",
+    options: ["Monday", "Tuesday", "Wednesday", "Thursday"],
+    answer: 3
+  }
+  ];
+  
+  let currentQuestion = 0;
+  let userAnswer = new Array(testQuestions.length).fill(null);
+  let markedQuestions = new Array(testQuestions.length).fill(false);
+  
+  const questionBox = document.getElementById("questionBox");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const submitBtn = document.getElementById("submitBtn");
+  const resultDiv = document.getElementById("result");
+  const markBtn = document.getElementById("markBtn");
+  const questionNav = document.getElementById("questionNav");
+  
+  // Initialize sidebar buttons
+  testQuestions.forEach((_, index) => {
+    const btn = document.createElement('button');
+    btn.textContent = index + 1;
+    btn.id = "qbtn" + index;
+    btn.addEventListener('click', () => loadQuestion(index));
+    questionNav.appendChild(btn);
+  });
+  
+  function showQuestion(index) {
+    currentQuestion = index;
+    const q = testQuestions[index];
+    questionBox.innerHTML = `
+      <h5>Q${index+1}: ${q.question}</h5>
+      <div id="optionsContainer">
+        ${q.options.map((opt, i) => `
+          <label class="option-label">
+            <input type="radio" name="option" value="${i}" ${userAnswer[index] === i ? "checked" : ""}>
+            ${opt}
+          </label>
+        `).join('')}
+      </div>
+    `;
+    markBtn.textContent = markedQuestions[index] ? "Unmark" : "Mark for Review";
+    updateNav();
+  }
+  
+  function saveAnswer() {
+    const selected = document.querySelector('input[name="option"]:checked');
+    if (selected) userAnswer[currentQuestion] = parseInt(selected.value);
+  }
+  
+  function updateNav() {
+    testQuestions.forEach((_, i) => {
+      const btn = document.getElementById("qbtn" + i);
+      btn.classList.remove("answered", "marked");
+      if (markedQuestions[i]) btn.classList.add("marked");
+      else if (userAnswer[i] !== null) btn.classList.add("answered");
+    });
+  }
+  
+  markBtn.addEventListener("click", () => {
+    markedQuestions[currentQuestion] = !markedQuestions[currentQuestion];
+    markBtn.textContent = markedQuestions[currentQuestion] ? "Unmark" : "Mark for Review";
+    updateNav();
+  });
+  
+  prevBtn.addEventListener("click", () => {
+    saveAnswer();
+    if (currentQuestion > 0) loadQuestion(currentQuestion - 1);
+  });
+  
+  nextBtn.addEventListener("click", () => {
+    saveAnswer();
+    if (currentQuestion < testQuestions.length - 1) loadQuestion(currentQuestion + 1);
+  });
+  
+  submitBtn.addEventListener("click", () => {
+    saveAnswer();
+    let score = 0;
+    questionBox.innerHTML = "";
+    let resultHTML = `<h4>Your Score: `;
+    testQuestions.forEach((q, i) => {
+      if (userAnswer[i] === q.answer) score++;
+    });
+    resultHTML += `${score} / ${testQuestions.length}</h4><hr>`;
+  
+    testQuestions.forEach((q, i) => {
+      resultHTML += `<p><strong>Q${i+1}: ${q.question}</strong></p>`;
+      resultHTML += `<p>Your answer: <span class="${userAnswer[i] === q.answer ? 'correct' : 'wrong'}">${userAnswer[i] !== null ? q.options[userAnswer[i]] : 'No Answer'}</span></p>`;
+      resultHTML += `<p>Correct answer: <span class="correct">${q.options[q.answer]}</span></p><hr>`;
+    });
+  
+    resultDiv.innerHTML = resultHTML;
+    prevBtn.style.display = "none";
+    nextBtn.style.display = "none";
+    submitBtn.style.display = "none";
+    markBtn.style.display = "none";
+  });
+  
+  function loadQuestion(index) {
+    showQuestion(index);
+  }
+  
+  showQuestion(0);
+  </script>
+  </body>
+  </html>
+

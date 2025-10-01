@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ONLINE EXAM PLATFORM</title>
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"/>
+   <style>
+    *{
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+    header>nav>a{
+      text-decoration: none;
+      color:white;
+      font-weight: 600;
+      padding:2px 10px;
+    }
+    #govt>ul>li{
+      display:flex;
+      flex-direction: column;
+      justify-content: space-evenly;
+      background-image: linear-gradient(to bottom,#2543d8,#11c8e4);
+      padding:10px;
+      border-radius: 5%;
+    }
+    #govt>ul>li>a{
+      text-decoration: none;
+      color:aliceblue;
+      font-weight: 700;
+    }
+   </style>
+</head>
+<body>
+
+  <header class="d-flex flex-column ">
+    <nav class="nav-top bg-primary d-flex navbar justify-content-between p-1">
+
+      <div class="brand fw-bold">Acheiver</div>
+      <form class="border-0 bg-body-tertiary rounded d-flex p-1 w-50">
+        <input type="search" class="border-0 rounded w-100" placeholder="Search Exams" id="search">
+      <label for="search"><button onclick="search()" class=" btn rounded border-0 bg-body-tertiary "><img src="./Files/search.svg" alt=""  ></button></label> 
+    </form>
+    <nav class="">
+      <button class="btn fw-bold" onclick="signup()">SIGN IN</button>
+      <button class="btn fw-bold" onclick="register()">REGISTER</button>
+    </nav>
+  </nav>
+  <nav class="nav-bottom bg-success d-flex justify-content-between ">
+    <a href="">UPSC</a>
+    <a href="">SSC</a>
+    <a href="">CBSE</a>
+    <a href="">CUET</a>
+    <a href="">IERT</a>
+    <a href="">NEET</a>
+  </nav>
+  </header>
+  <main>
+    <section id="govt" class="d-flex flex-column justify-content-center align-items-center p-2 ">
+      <h2>GOVERNMENT EXAMS</h2>
+      <ul class="d-flex justify-content-evenly gap-3">
+        <li class="">
+          <a href="./SOURCE_CODE/UPSC/upsc.html">
+            <img src="" alt="">
+            <p>UPSC</p>
+          </a>
+        </li>
+        <li class="">
+          <a href="">
+            <img src="" alt="">
+            <p>SSC</p>
+          </a>
+        </li>
+        <li class="">
+          <a href="">
+            <img src="" alt="">
+            <p>BPSC</p>
+          </a>
+        </li>
+        <li class="">
+          <a href="">
+            <img src="" alt="">
+            <p>BPSC</p>
+          </a>
+        </li>
+        <li class="">
+          <a href="">
+            <img src="" alt="">
+            <p>RRB</p>
+          </a>
+        </li>
+        <li class="">
+          <a href="">
+            <img src="" alt="">
+            <p>KHUSHI</p>
+          </a>
+        </li>
+      
+      </ul>
+  </section>
+  <section id="entranceExams">
+    <h2>ENTRANCE EXAMS</h2>
+  </section>
+  </main>
+  
+  
+</body>
+</html>
