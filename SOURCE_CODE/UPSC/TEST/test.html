@@ -9,7 +9,10 @@
     body {
       display: flex;
       min-height: 100vh;
+      margin: 0;
+      flex-direction: row;
     }
+
     .sidebar {
       width: 250px;
       background: #f4f4f4;
@@ -72,6 +75,47 @@
       border-radius: 5px;
       cursor: pointer;
     }
+
+    /* ===== RESPONSIVE ===== */
+    @media(max-width: 992px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+        padding: 10px;
+      }
+      .question-nav {
+        flex-wrap: nowrap;
+      }
+      .question-nav button {
+        min-width: 40px;
+        flex: 0 0 auto;
+      }
+      .main-content {
+        padding: 15px;
+      }
+    }
+
+    @media(max-width: 576px) {
+      .question-nav button {
+        width: 35px;
+        height: 35px;
+        font-size: 12px;
+      }
+      .mark-btn, #prevBtn, #nextBtn, #submitBtn {
+        width: 100%;
+        margin-bottom: 5px;
+      }
+      header h1, header h2 {
+        font-size: 1.2rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -81,7 +125,7 @@
   </div>
 
   <div class="main-content">
-    <header class="d-flex justify-content-around bg-body-tertiary p-2 mb-3">
+    <header class="d-flex justify-content-around bg-body-tertiary p-2 mb-3 flex-wrap">
       <nav>
         <h2 class="brand">Acheiver</h2>
         <h1>UPSC Exam</h1>
@@ -93,7 +137,7 @@
 
       <button class="mark-btn" id="markBtn">Mark for Review</button>
 
-      <section class="mt-3">
+      <section class="mt-3 d-flex flex-wrap gap-2">
         <button id="prevBtn" class="btn btn-secondary">Previous</button>
         <button id="nextBtn" class="btn btn-primary">Next</button>
         <button id="submitBtn" class="btn btn-success">Submit</button>
@@ -104,6 +148,7 @@
   </div>
 
   <script>
+
 
     const testQuestions = [
   {
@@ -342,106 +387,104 @@
     options: ["Monday", "Tuesday", "Wednesday", "Thursday"],
     answer: 3
   }
-  ];
-  
-  let currentQuestion = 0;
-  let userAnswer = new Array(testQuestions.length).fill(null);
-  let markedQuestions = new Array(testQuestions.length).fill(false);
-  
-  const questionBox = document.getElementById("questionBox");
-  const prevBtn = document.getElementById("prevBtn");
-  const nextBtn = document.getElementById("nextBtn");
-  const submitBtn = document.getElementById("submitBtn");
-  const resultDiv = document.getElementById("result");
-  const markBtn = document.getElementById("markBtn");
-  const questionNav = document.getElementById("questionNav");
-  
-  // Initialize sidebar buttons
-  testQuestions.forEach((_, index) => {
-    const btn = document.createElement('button');
-    btn.textContent = index + 1;
-    btn.id = "qbtn" + index;
-    btn.addEventListener('click', () => loadQuestion(index));
-    questionNav.appendChild(btn);
-  });
-  
-  function showQuestion(index) {
-    currentQuestion = index;
-    const q = testQuestions[index];
-    questionBox.innerHTML = `
-      <h5>Q${index+1}: ${q.question}</h5>
-      <div id="optionsContainer">
-        ${q.options.map((opt, i) => `
-          <label class="option-label">
-            <input type="radio" name="option" value="${i}" ${userAnswer[index] === i ? "checked" : ""}>
-            ${opt}
-          </label>
-        `).join('')}
-      </div>
-    `;
-    markBtn.textContent = markedQuestions[index] ? "Unmark" : "Mark for Review";
-    updateNav();
-  }
-  
-  function saveAnswer() {
-    const selected = document.querySelector('input[name="option"]:checked');
-    if (selected) userAnswer[currentQuestion] = parseInt(selected.value);
-  }
-  
-  function updateNav() {
-    testQuestions.forEach((_, i) => {
-      const btn = document.getElementById("qbtn" + i);
-      btn.classList.remove("answered", "marked");
-      if (markedQuestions[i]) btn.classList.add("marked");
-      else if (userAnswer[i] !== null) btn.classList.add("answered");
-    });
-  }
-  
-  markBtn.addEventListener("click", () => {
-    markedQuestions[currentQuestion] = !markedQuestions[currentQuestion];
-    markBtn.textContent = markedQuestions[currentQuestion] ? "Unmark" : "Mark for Review";
-    updateNav();
-  });
-  
-  prevBtn.addEventListener("click", () => {
-    saveAnswer();
-    if (currentQuestion > 0) loadQuestion(currentQuestion - 1);
-  });
-  
-  nextBtn.addEventListener("click", () => {
-    saveAnswer();
-    if (currentQuestion < testQuestions.length - 1) loadQuestion(currentQuestion + 1);
-  });
-  
-  submitBtn.addEventListener("click", () => {
-    saveAnswer();
-    let score = 0;
-    questionBox.innerHTML = "";
-    let resultHTML = `<h4>Your Score: `;
-    testQuestions.forEach((q, i) => {
-      if (userAnswer[i] === q.answer) score++;
-    });
-    resultHTML += `${score} / ${testQuestions.length}</h4><hr>`;
-  
-    testQuestions.forEach((q, i) => {
-      resultHTML += `<p><strong>Q${i+1}: ${q.question}</strong></p>`;
-      resultHTML += `<p>Your answer: <span class="${userAnswer[i] === q.answer ? 'correct' : 'wrong'}">${userAnswer[i] !== null ? q.options[userAnswer[i]] : 'No Answer'}</span></p>`;
-      resultHTML += `<p>Correct answer: <span class="correct">${q.options[q.answer]}</span></p><hr>`;
-    });
-  
-    resultDiv.innerHTML = resultHTML;
-    prevBtn.style.display = "none";
-    nextBtn.style.display = "none";
-    submitBtn.style.display = "none";
-    markBtn.style.display = "none";
-  });
-  
-  function loadQuestion(index) {
-    showQuestion(index);
-  }
-  
-  showQuestion(0);
-  </script>
-  </body>
-  </html>
+    ];
 
+    let currentQuestion = 0;
+    let userAnswer = new Array(testQuestions.length).fill(null);
+    let markedQuestions = new Array(testQuestions.length).fill(false);
+
+    const questionBox = document.getElementById("questionBox");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const submitBtn = document.getElementById("submitBtn");
+    const resultDiv = document.getElementById("result");
+    const markBtn = document.getElementById("markBtn");
+    const questionNav = document.getElementById("questionNav");
+
+    testQuestions.forEach((_, index) => {
+      const btn = document.createElement('button');
+      btn.textContent = index + 1;
+      btn.id = "qbtn" + index;
+      btn.addEventListener('click', () => loadQuestion(index));
+      questionNav.appendChild(btn);
+    });
+
+    function showQuestion(index) {
+      currentQuestion = index;
+      const q = testQuestions[index];
+      questionBox.innerHTML = `
+        <h5>Q${index+1}: ${q.question}</h5>
+        <div id="optionsContainer">
+          ${q.options.map((opt, i) => `
+            <label class="option-label">
+              <input type="radio" name="option" value="${i}" ${userAnswer[index] === i ? "checked" : ""}>
+              ${opt}
+            </label>
+          `).join('')}
+        </div>
+      `;
+      markBtn.textContent = markedQuestions[index] ? "Unmark" : "Mark for Review";
+      updateNav();
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector('input[name="option"]:checked');
+      if (selected) userAnswer[currentQuestion] = parseInt(selected.value);
+    }
+
+    function updateNav() {
+      testQuestions.forEach((_, i) => {
+        const btn = document.getElementById("qbtn" + i);
+        btn.classList.remove("answered", "marked");
+        if (markedQuestions[i]) btn.classList.add("marked");
+        else if (userAnswer[i] !== null) btn.classList.add("answered");
+      });
+    }
+
+    markBtn.addEventListener("click", () => {
+      markedQuestions[currentQuestion] = !markedQuestions[currentQuestion];
+      markBtn.textContent = markedQuestions[currentQuestion] ? "Unmark" : "Mark for Review";
+      updateNav();
+    });
+
+    prevBtn.addEventListener("click", () => {
+      saveAnswer();
+      if (currentQuestion > 0) loadQuestion(currentQuestion - 1);
+    });
+
+    nextBtn.addEventListener("click", () => {
+      saveAnswer();
+      if (currentQuestion < testQuestions.length - 1) loadQuestion(currentQuestion + 1);
+    });
+
+    submitBtn.addEventListener("click", () => {
+      saveAnswer();
+      let score = 0;
+      questionBox.innerHTML = "";
+      let resultHTML = `<h4>Your Score: `;
+      testQuestions.forEach((q, i) => {
+        if (userAnswer[i] === q.answer) score++;
+      });
+      resultHTML += `${score} / ${testQuestions.length}</h4><hr>`;
+
+      testQuestions.forEach((q, i) => {
+        resultHTML += `<p><strong>Q${i+1}: ${q.question}</strong></p>`;
+        resultHTML += `<p>Your answer: <span class="${userAnswer[i] === q.answer ? 'correct' : 'wrong'}">${userAnswer[i] !== null ? q.options[userAnswer[i]] : 'No Answer'}</span></p>`;
+        resultHTML += `<p>Correct answer: <span class="correct">${q.options[q.answer]}</span></p><hr>`;
+      });
+
+      resultDiv.innerHTML = resultHTML;
+      prevBtn.style.display = "none";
+      nextBtn.style.display = "none";
+      submitBtn.style.display = "none";
+      markBtn.style.display = "none";
+    });
+
+    function loadQuestion(index) {
+      showQuestion(index);
+    }
+
+    showQuestion(0);
+  </script>
+</body>
+</html>
